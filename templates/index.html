@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CodeML Analyzer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo-wrap">
+      <div class="logo-ring">
+        <svg class="ring-svg ring-outer" viewBox="0 0 60 60">
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3b82f6"/>
+              <stop offset="100%" stop-color="#8b5cf6"/>
+            </linearGradient>
+            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#22d3ee"/>
+              <stop offset="100%" stop-color="#3b82f6"/>
+            </linearGradient>
+          </defs>
+          <circle cx="30" cy="30" r="26" fill="none" stroke="url(#grad1)" stroke-width="3" stroke-dasharray="50 113" stroke-linecap="round"/>
+        </svg>
+        <svg class="ring-svg ring-inner" viewBox="0 0 60 60">
+          <circle cx="30" cy="30" r="17" fill="none" stroke="url(#grad2)" stroke-width="2" stroke-dasharray="28 79" stroke-linecap="round"/>
+        </svg>
+        <span class="logo-icon-inner">&lt;/&gt;</span>
+      </div>
+      <div class="logo-text-wrap">
+        <span class="logo-name">CodeML</span>
+        <span class="logo-sub">Analyzer</span>
+      </div>
+    </div>
+
+    <div class="header-chips">
+      <span class="chip chip-blue">Bug Detection</span>
+      <span class="chip chip-purple">Complexity</span>
+      <span class="chip chip-cyan">Security</span>
+      <span class="chip chip-indigo">ML Classifier</span>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-line">
+      Paste code and get &nbsp;
+      <span class="type-target" id="typeTarget">instant AI analysis</span>
+      <span class="cursor-blink">|</span>
+    </p>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <main class="layout">
+
+    <!-- LEFT: INPUT -->
+    <section class="panel panel-left">
+      <div class="panel-top-bar">
+        <span class="panel-label">INPUT</span>
+        <div class="lang-tabs" id="langTabs">
+          <button class="ltab active" onclick="selectLang(this)">Python</button>
+          <button class="ltab" onclick="selectLang(this)">JavaScript</button>
+          <button class="ltab" onclick="selectLang(this)">Java</button>
+          <button class="ltab" onclick="selectLang(this)">C++</button>
+          <button class="ltab" onclick="selectLang(this)">SQL</button>
+        </div>
+      </div>
+
+      <div class="editor-wrap">
+        <div class="line-nums" id="lineNums">1</div>
+        <textarea id="codeInput" spellcheck="false" placeholder="# Paste your code here...&#10;def greet(name):&#10;    return f'Hello, {name}!'"></textarea>
+      </div>
+
+      <div class="options-bar">
+        <label class="opt-check"><input type="checkbox" checked id="chkBug"/><span class="checkmark"></span>Bug Detection</label>
+        <label class="opt-check"><input type="checkbox" checked id="chkComplex"/><span class="checkmark"></span>Complexity</label>
+        <label class="opt-check"><input type="checkbox" checked id="chkSec"/><span class="checkmark"></span>Security</label>
+        <label class="opt-check"><input type="checkbox" checked id="chkML"/><span class="checkmark"></span>ML Classifier</label>
+      </div>
+
+      <button class="btn-analyze" id="analyzeBtn" onclick="analyzeCode()">
+        <span class="btn-icon-wrap">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8l4 4 6-8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        Analyze Code
+        <span class="btn-loader" id="btnLoader"></span>
+      </button>
+    </section>
+
+    <!-- RIGHT: RESULTS -->
+    <section class="panel panel-right">
+      <div class="result-tabs" id="resultTabs">
+        <button class="rtab active" onclick="switchTab(this,'overview')">Overview</button>
+        <button class="rtab" onclick="switchTab(this,'bugs')">Bugs</button>
+        <button class="rtab" onclick="switchTab(this,'complexity')">Complexity</button>
+        <button class="rtab" onclick="switchTab(this,'security')">Security</button>
+        <button class="rtab" onclick="switchTab(this,'classifier')">ML Result</button>
+      </div>
+
+      <div class="result-body" id="resultBody">
+        <div class="empty-state">
+          <!-- SPINNING RINGS in empty state -->
+          <div class="empty-spin-wrap">
+            <svg class="empty-ring-outer" viewBox="0 0 100 100" width="100" height="100">
+              <defs>
+                <linearGradient id="eg1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#3b82f6"/>
+                  <stop offset="100%" stop-color="#8b5cf6"/>
+                </linearGradient>
+                <linearGradient id="eg2" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#22d3ee"/>
+                  <stop offset="100%" stop-color="#6366f1"/>
+                </linearGradient>
+              </defs>
+              <circle cx="50" cy="50" r="44" fill="none" stroke="url(#eg1)" stroke-width="3.5" stroke-dasharray="80 197" stroke-linecap="round"/>
+            </svg>
+            <svg class="empty-ring-inner" viewBox="0 0 100 100" width="100" height="100">
+              <circle cx="50" cy="50" r="30" fill="none" stroke="url(#eg2)" stroke-width="2.5" stroke-dasharray="48 140" stroke-linecap="round"/>
+            </svg>
+            <span class="empty-icon">&lt;/&gt;</span>
+          </div>
+          <p class="empty-title">Ready to Analyze</p>
+          <p class="empty-sub">Paste your code on the left and click <strong>Analyze Code</strong></p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CHAT -->
+  <section class="chat-section">
+    <div class="chat-header">
+      <div class="chat-title-wrap">
+        <span class="chat-icon">🤖</span>
+        <span class="chat-title">Chat with your Code</span>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="bubble ai">
+        <div class="bubble-avatar">AI</div>
+        <div class="bubble-content">Hi! Analyze your code first, then ask me anything — bugs, optimization tips, security review, or concept explanations.</div>
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Ask something about your code..."/>
+      <button class="chat-send" onclick="sendChat()">
+        <svg width="17" height="17" viewBox="0 0 18 18" fill="none">
+          <path d="M2 9h14M9 2l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
