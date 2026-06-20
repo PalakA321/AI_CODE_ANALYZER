@@ -4,10 +4,6 @@ A web-based code analysis tool that reviews code automatically using Machine Lea
 
 > This was a **team project** — forked here from the original repo by [nahidaa-parbeen](https://github.com/nahidaa-parbeen/AI_CODE_ANALYZER), built collaboratively. I contributed to development alongside my teammate.
 
-![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
-![Flask](https://img.shields.io/badge/Flask-000000?style=flat&logo=flask&logoColor=white)
-![Scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=flat&logo=scikit-learn&logoColor=white)
-
 ## What it does
 
 - **Bug Detection** — scans code line-by-line against 50 rules across security, bug, best-practice, performance, and code-quality categories, each with a severity level and auto-fix suggestion
